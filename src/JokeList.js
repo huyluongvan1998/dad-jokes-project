@@ -3,31 +3,49 @@ import axios from "axios";
 import uuid from "uuid/v4";
 import Joke from "./Joke";
 import "./JokeList.css";
-
+import { useSelector, useDispatch } from "react-redux";
+import { 
+  JokesSelector,
+} from './store/modules/app/selector';
+import { 
+  increment,
+  decrement,
+  sortJokes
+ } from "./store/modules/app/slice";
 const defaultProps = {
   numJokesToGet: 10
 };
 let seenJokes = new Set();
 
 const JokeList = () => {
-  
-    const [data, setData] = useState({
-      jokes:  JSON.parse(window.localStorage.getItem('jokes')) || [] ,
-      loading: false
-    })
+  const dispatch = useDispatch();
+  //Loading not fixed yet
+  const [data, setData] = useState({
+    loading: false
+  })
+  //Loading temporary
 
-    
+  let jokes = useSelector(JokesSelector);
+
+
+
+  useEffect(() => {
+    return () => {
+      dispatch(sortJokes());
+      window.localStorage.setItem("jokes", JSON.stringify([...jokes])) 
+    }
+  },[ jokes, dispatch])
+
   // run everyrtime data.jokes changed to set seenJokers [used for validate duplicate]
   useEffect(()=> {
-    if(data.jokes.length > 0) {
-      seenJokes = new Set(data.jokes.map(j => j.text));
-      console.log(seenJokes);
+    if(jokes.length > 0) {
+      seenJokes = new Set(jokes.map(j => j.text));
     } else {
       return;
     }
-    
-  },[data.jokes])
+  },[jokes])
  
+// Call API function will change when applied saga
 
   //Generate jokes function [have defaultProps.numJokesToGet jokes]
   const getJokes = async () => {
@@ -56,29 +74,16 @@ const JokeList = () => {
       setData({...data, loading: false });
     }
   }
-
+// Call API function will change when applied saga
   
  
-
-  //Function for handle Vote 
-  const handleVote = (id, delta)  => {
-    setData(
-      st => ({...data, jokes: st.jokes.map(j =>
-          j.id === id ? { ...j, votes: j.votes + delta } : j //set field votes of jokes depend on id and delta(1 or -1)
-        )
-      })
-    )
-  }
-  
-
-//Function to generate jokes on clicked
+//Will change when applied SAGA
+//Function to generate jokes on clicked 
   const handleClick = () => {
     setData({...data, loading: true });
     getJokes();
   }
-
-
-
+//Will change when applied SAGA
 
   //check to display loading
     if (data.loading) {
@@ -89,7 +94,7 @@ const JokeList = () => {
         </div>
       );
     }// else 
-    let jokes = data.jokes.sort((a, b) => b.votes - a.votes);
+    
     return (
       <div className='JokeList'>
         <div className='JokeList-sidebar'>
@@ -108,8 +113,8 @@ const JokeList = () => {
               key={j.id}
               votes={j.votes}
               text={j.text}
-              upvote={() => handleVote(j.id, 1)}
-              downvote={() => handleVote(j.id, -1)}
+              upvote={() => dispatch(increment(j.id))}
+              downvote={() => dispatch(decrement(j.id))}
             />
           ))}
         </div>

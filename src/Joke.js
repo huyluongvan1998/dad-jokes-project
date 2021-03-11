@@ -1,7 +1,7 @@
 import React from "react";
 import "./Joke.css";
 
-const Joke = ({votes, text, upvote, downvote}) => {
+const Joke = ({ votes, text, upvote, downvote }) => {
   const getColor = () => {
     if (votes >= 15) {
       return "#4CAF50";
@@ -18,7 +18,7 @@ const Joke = ({votes, text, upvote, downvote}) => {
     } else {
       return "#f44336";
     }
-  }
+  };
   const getEmoji = () => {
     if (votes >= 15) {
       return "em em-rolling_on_the_floor_laughing";
@@ -35,23 +35,23 @@ const Joke = ({votes, text, upvote, downvote}) => {
     } else {
       return "em em-angry";
     }
-  }
-  
-    return (
-      <div className='Joke'>
-        <div className='Joke-buttons'>
-          <i className='fas fa-arrow-up' onClick={upvote} />
-          <span className='Joke-votes' style={{ borderColor: getColor() }}>
-            {votes}
-          </span>
-          <i className='fas fa-arrow-down' onClick={downvote} />
-        </div>
-        <div className='Joke-text'>{text}</div>
-        <div className='Joke-smiley'>
-          <i className={getEmoji()} />
-        </div>
+  };
+
+  return (
+    <div className="Joke">
+      <div className="Joke-buttons">
+        <i className="fas fa-arrow-up" onClick={upvote} />
+        <span className="Joke-votes" style={{ borderColor: getColor() }}>
+          {votes}
+        </span>
+        <i className="fas fa-arrow-down" onClick={downvote} />
       </div>
-    );
-  }
+      <div className="Joke-text">{text}</div>
+      <div className="Joke-smiley">
+        <i className={getEmoji()} />
+      </div>
+    </div>
+  );
+};
 
 export default Joke;

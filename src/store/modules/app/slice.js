@@ -5,9 +5,21 @@ const appSlice = createSlice({
   initialState: {
     jokes: JSON.parse(window.localStorage.getItem("jokes")) || [],
     isLoading: false,
+    anhDung: []
   },
   reducers: {
     fetchJokes: () => {},
+    setJokes: (state, action) => {
+      const temp_arr = action.payload;
+      (temp_arr || []).map(el => {
+        const {id, joke, status} = el;
+        if(status === 200) {
+          return state.jokes.push({id: id, text: joke, isLoading: false, votes: 0})
+        } else {
+          return console.log('error at slice');
+        }
+      })
+    },
 
     increment: (state, action) => {
       const { payload } = action;
@@ -25,6 +37,6 @@ const appSlice = createSlice({
   },
 });
 
-export const { fetchJokes, increment, decrement, sortJokes } = appSlice.actions;
+export const { fetchJokes, increment, decrement, sortJokes, setJokes } = appSlice.actions;
 
 export default appSlice.reducer;

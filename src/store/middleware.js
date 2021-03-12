@@ -1,6 +1,12 @@
-import { all, call } from 'redux-saga/effects';
-import { appMiddleware } from './modules/app/saga';
+import { takeLeading } from 'redux-saga/effects';
+import { fetchJokesHandle } from './modules/app/saga';
+import { fetchJokes } from './modules/app/slice';
+
+
+
+
+
 
 export default function* rootSaga() {
-  yield all([call(appMiddleware)]);
+  yield takeLeading (fetchJokes, fetchJokesHandle)
 }
